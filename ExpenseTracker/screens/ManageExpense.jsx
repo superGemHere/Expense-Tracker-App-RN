@@ -15,6 +15,20 @@ const ManageExpense = ({ route, navigation }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       title: isEditing ? "Edit Expense" : "Add Expense",
+      headerTitle: () => (
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 20,
+            textAlign: 'center',
+            textShadowColor: GlobalStyles.colors.accent500,
+            textShadowOffset: { width: 1, height: 1 },
+            textShadowRadius: 4,
+          }}
+        >
+          {isEditing ? "Edit Expense" : "Add Expense"}
+        </Text>
+      ),
     })
   }, [navigation, isEditing]);
 

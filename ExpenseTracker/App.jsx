@@ -23,8 +23,13 @@ const ExpensesOverview = () => {
     <Tab.Navigator screenOptions={({navigation}) => (
       {
       headerTitleAlign: 'center',
+      headerTitleStyle: {
+        textShadowColor: GlobalStyles.colors.accent500,
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 4,
+      },
       headerStyle:{
-        backgroundColor: GlobalStyles.colors.primary500
+        backgroundColor: GlobalStyles.colors.primary500,
       },
       headerTintColor: 'white',
       tabBarStyle: {
