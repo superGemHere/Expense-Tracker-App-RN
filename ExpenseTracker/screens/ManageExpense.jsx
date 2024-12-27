@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const ManageExpenses = () => {
+const ManageExpense = () => {
   return (
     <View>
-      <Text>ManageExpenses</Text>
+      <Text>ManageExpense</Text>
     </View>
   )
 }
 
-export default ManageExpenses
+export default ManageExpense
