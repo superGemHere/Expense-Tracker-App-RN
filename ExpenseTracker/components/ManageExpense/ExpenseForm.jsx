@@ -1,23 +1,41 @@
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import React, { useState } from "react";
-import Input from "./Input";
 import { GlobalStyles } from "../../constants/styles";
 
-const ExpenseForm = () => {
-   const [inputValues, setInputValues] = useState({
-      amount: "",
-      date: "",
-      description: "",
-   });
+import Input from "./Input";
+import Button from "../UI/Button";
+
+const ExpenseForm = ({
+   onCancel,
+   onSubmit,
+   submitBtnLabel
+}) => {
+  const [inputValues, setInputValues] = useState({
+    amount: "",
+    date: "",
+    description: ""
+  });
 
   const inputChangedHandler = (inputIdentifier, enteredValue) => {
-   setInputValues((prevInputValues) => {
+    setInputValues(prevInputValues => {
       return {
-         ...prevInputValues, 
-         [inputIdentifier]: enteredValue
+        ...prevInputValues,
+        [inputIdentifier]: enteredValue
       };
-   });
+    });
   };
+
+  const submitHandler = () => {
+   const expenseData = {
+      amount: +inputValues.amount,
+      date: new Date(inputValues.date),
+      description: inputValues.description
+   };
+   
+   onSubmit(expenseData);
+  };
+
+
 
   return (
     <View style={styles.container}>
@@ -53,6 +71,14 @@ const ExpenseForm = () => {
           value: inputValues.description
         }}
       />
+      <View style={styles.btnContainer}>
+        <Button mode={"flat"} onPress={onCancel} style={styles.button}>
+          Cancel
+        </Button>
+        <Button onPress={submitHandler} style={styles.button}>
+          {submitBtnLabel}
+        </Button>
+      </View>
     </View>
   );
 };
@@ -80,5 +106,14 @@ const styles = StyleSheet.create({
   },
   rowInput: {
     flex: 1
+  },
+  btnContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  button: {
+    minWidth: 120,
+    marginHorizontal: 8
   }
 });
