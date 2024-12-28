@@ -9,11 +9,13 @@ import Button from "../components/UI/Button";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 
 const ManageExpense = ({ route, navigation }) => {
-  const { deleteExpense, updateExpense, addExpense } = useContext(ExpensesContext);
+  const { deleteExpense, updateExpense, addExpense, expenses } = useContext(ExpensesContext);
 
   const expenseId = route.params?.expenseId;
 
   const isEditing = !!expenseId;
+
+  const selectedExpense = isEditing ? expenses.find(expense => expense.id === expenseId) : null;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -61,6 +63,7 @@ const ManageExpense = ({ route, navigation }) => {
             onCancel={cancelHandler} 
             submitBtnLabel={isEditing ? "Update" : "Add"}
             onSubmit={confirmHandler}
+            defaultValues={selectedExpense}
           />
           {isEditing && (
             <View style={styles.deleteContainer}>
