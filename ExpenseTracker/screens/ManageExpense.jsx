@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView, ScrollView } from "react-native";
 import React, { useContext, useLayoutEffect } from "react";
 
 import { GlobalStyles } from "../constants/styles";
@@ -44,62 +44,51 @@ const ManageExpense = ({ route, navigation }) => {
     navigation.goBack();
   };
   
-  const confirmHandler = () => {
+  const confirmHandler = (expenseData) => {
     if(expenseId){
-      updateExpense(expenseId, {
-        id: Math.random().toString(),
-        description: "Test Expense Updated",
-        amount: 19.99,
-        date: new Date('2024-12-17'),
-      });
+      updateExpense(expenseId, expenseData);
     }else{
-      addExpense({
-        id: Math.random().toString(),
-        description: "Test Expense Added",
-        amount: 19.99,
-        date: new Date('2024-12-15'),
-      });
+      addExpense(expenseData);
     }
     navigation.goBack();
   };
 
   return (
-    <View style={styles.container}>
-      <ExpenseForm />
-      <View style={styles.btnContainer}>
-        <Button mode={"flat"} onPress={cancelHandler} style={styles.button}>Cancel</Button>
-        <Button onPress={confirmHandler} style={styles.button}>{isEditing ? "Update" : "Add"}</Button>
-      </View>
-      {isEditing && (
-        <View style={styles.deleteContainer}>
-          <IconBtn 
-          icon={"trash"} 
-          color={GlobalStyles.colors.error500} 
-          size={36} 
-          onPress={deleteExpenseHandler}
+    <ScrollView style={styles.screen}>
+      <KeyboardAvoidingView behavior="position" style={styles.screen}>
+        <View style={styles.container}>
+          <ExpenseForm 
+            onCancel={cancelHandler} 
+            submitBtnLabel={isEditing ? "Update" : "Add"}
+            onSubmit={confirmHandler}
           />
+          {isEditing && (
+            <View style={styles.deleteContainer}>
+              <IconBtn 
+              icon={"trash"} 
+              color={GlobalStyles.colors.error500} 
+              size={36} 
+              onPress={deleteExpenseHandler}
+              />
+            </View>
+          )}
         </View>
-      )}
-    </View>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 
 export default ManageExpense;
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: GlobalStyles.colors.primary800,
+  },
   container: {
     flex: 1,
     padding: 24,
     backgroundColor: GlobalStyles.colors.primary800,
-  },
-  btnContainer:{
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  button: {
-    minWidth: 120,
-    marginHorizontal: 8,
   },
   deleteContainer: {
     alignItems: "center",
