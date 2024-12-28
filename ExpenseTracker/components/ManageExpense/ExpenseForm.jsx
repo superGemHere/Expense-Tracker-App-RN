@@ -4,7 +4,20 @@ import Input from "./Input";
 import { GlobalStyles } from "../../constants/styles";
 
 const ExpenseForm = () => {
+   const [inputValues, setInputValues] = useState({
+      amount: "",
+      date: "",
+      description: "",
+   });
 
+  const inputChangedHandler = (inputIdentifier, enteredValue) => {
+   setInputValues((prevInputValues) => {
+      return {
+         ...prevInputValues, 
+         [inputIdentifier]: enteredValue
+      };
+   });
+  };
 
   return (
     <View style={styles.container}>
@@ -15,6 +28,8 @@ const ExpenseForm = () => {
           style={styles.rowInput}
           textInputConfig={{
             keyboardType: "decimal-pad",
+            onChangeText: inputChangedHandler.bind(this, "amount"),
+            value: inputValues.amount
           }}
         />
         <Input
@@ -23,15 +38,19 @@ const ExpenseForm = () => {
           textInputConfig={{
             placeholder: "YYYY-MM-DD",
             maxLength: 10,
+            onChangeText: inputChangedHandler.bind(this, "date"),
+            value: inputValues.date
           }}
         />
       </View>
       <Input
         label={"Description"}
         textInputConfig={{
-          multiline: true
+          multiline: true,
           // autocorrect: false,
           // autoCapitalize: 'words',
+          onChangeText: inputChangedHandler.bind(this, "description"),
+          value: inputValues.description
         }}
       />
     </View>
