@@ -5,8 +5,8 @@ import { GlobalStyles } from "../constants/styles";
 import { ExpensesContext } from "../store/context/expenses-context";
 
 import IconBtn from "../components/UI/IconBtn";
-import Button from "../components/UI/Button";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
+import { storeExpense } from "../utils/http";
 
 const ManageExpense = ({ route, navigation }) => {
   const { deleteExpense, updateExpense, addExpense, expenses } = useContext(ExpensesContext);
@@ -50,9 +50,10 @@ const ManageExpense = ({ route, navigation }) => {
     if(expenseId){
       updateExpense(expenseId, expenseData);
     }else{
+      storeExpense(expenseData);
       addExpense(expenseData);
     }
-    navigation.goBack();
+    // navigation.goBack();
   };
 
   return (
