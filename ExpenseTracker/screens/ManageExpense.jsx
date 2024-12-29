@@ -66,7 +66,7 @@ const ManageExpense = ({ route, navigation }) => {
         await  updateExpenseRemote(expenseId, expenseData);
       }else{
         const id = await storeExpense(expenseData);
-        addExpense({expenseData, id: id});
+        addExpense({...expenseData, id: id});
       }
       navigation.goBack();
 
