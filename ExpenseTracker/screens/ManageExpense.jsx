@@ -6,10 +6,10 @@ import { ExpensesContext } from "../store/context/expenses-context";
 
 import IconBtn from "../components/UI/IconBtn";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
-import { storeExpense } from "../utils/http";
+import { deleteExpenseRemote, storeExpense, updateExpenseRemote } from "../utils/http";
 
 const ManageExpense = ({ route, navigation }) => {
-  const { deleteExpense, updateExpense, addExpense, expenses } = useContext(ExpensesContext);
+  const { deleteExpenseLocal, updateExpenseLocal, addExpense, expenses } = useContext(ExpensesContext);
 
   const expenseId = route.params?.expenseId;
 
@@ -37,8 +37,9 @@ const ManageExpense = ({ route, navigation }) => {
     })
   }, [navigation, isEditing]);
 
-  const deleteExpenseHandler = () => {
-    deleteExpense(expenseId);
+  const deleteExpenseHandler = async () => {
+    await deleteExpenseRemote(expenseId);
+    deleteExpenseLocal(expenseId);
     navigation.goBack();
   };
 
@@ -46,14 +47,15 @@ const ManageExpense = ({ route, navigation }) => {
     navigation.goBack();
   };
   
-  const confirmHandler = (expenseData) => {
+  const confirmHandler = async (expenseData) => {
     if(expenseId){
-      updateExpense(expenseId, expenseData);
+      updateExpenseLocal(expenseId, expenseData);
+      await  updateExpenseRemote(expenseId, expenseData);
     }else{
-      storeExpense(expenseData);
-      addExpense(expenseData);
+      const id = await storeExpense(expenseData);
+      addExpense({expenseData, id: id});
     }
-    // navigation.goBack();
+    navigation.goBack();
   };
 
   return (
