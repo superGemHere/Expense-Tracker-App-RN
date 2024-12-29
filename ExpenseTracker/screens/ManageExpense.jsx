@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView, ScrollView } from "react-native";
-import React, { useContext, useLayoutEffect } from "react";
+import React, { useContext, useLayoutEffect, useState } from "react";
 
 import { GlobalStyles } from "../constants/styles";
 import { ExpensesContext } from "../store/context/expenses-context";
@@ -7,8 +7,12 @@ import { ExpensesContext } from "../store/context/expenses-context";
 import IconBtn from "../components/UI/IconBtn";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 import { deleteExpenseRemote, storeExpense, updateExpenseRemote } from "../utils/http";
+import LoadingOverlay from "../components/UI/LoadingOverlay";
+import ErrorOverlay from "../components/UI/ErrorOverlay";
 
 const ManageExpense = ({ route, navigation }) => {
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { deleteExpenseLocal, updateExpenseLocal, addExpense, expenses } = useContext(ExpensesContext);
 
   const expenseId = route.params?.expenseId;
@@ -38,8 +42,14 @@ const ManageExpense = ({ route, navigation }) => {
   }, [navigation, isEditing]);
 
   const deleteExpenseHandler = async () => {
-    await deleteExpenseRemote(expenseId);
-    deleteExpenseLocal(expenseId);
+    setIsLoading(true);
+    try {
+      await deleteExpenseRemote(expenseId);
+      deleteExpenseLocal(expenseId);
+    } catch (error) {
+      setErrorMsg(error.message);
+      setIsLoading(false);
+    }
     navigation.goBack();
   };
 
@@ -48,17 +58,33 @@ const ManageExpense = ({ route, navigation }) => {
   };
   
   const confirmHandler = async (expenseData) => {
-    if(expenseId){
-      updateExpenseLocal(expenseId, expenseData);
-      await  updateExpenseRemote(expenseId, expenseData);
-    }else{
-      const id = await storeExpense(expenseData);
-      addExpense({expenseData, id: id});
+    setIsLoading(true);
+    try {
+
+      if(expenseId){
+        updateExpenseLocal(expenseId, expenseData);
+        await  updateExpenseRemote(expenseId, expenseData);
+      }else{
+        const id = await storeExpense(expenseData);
+        addExpense({expenseData, id: id});
+      }
+      navigation.goBack();
+
+    } catch (error) {
+
+      setErrorMsg(error.message);
+      setIsLoading(false);
+      
     }
-    navigation.goBack();
+
+
   };
 
-  return (
+  const errorHandler = () => {
+    setErrorMsg(null);
+  }
+
+  return ( errorMsg ? <ErrorOverlay message={errorMsg} onConfirm={errorHandler} /> : isLoading ? <LoadingOverlay /> :(
     <ScrollView style={styles.screen}>
       <KeyboardAvoidingView behavior="position" style={styles.screen}>
         <View style={styles.container}>
@@ -81,6 +107,7 @@ const ManageExpense = ({ route, navigation }) => {
         </View>
       </KeyboardAvoidingView>
     </ScrollView>
+    )
   );
 };
 
