@@ -1,5 +1,4 @@
 import { createContext, useReducer } from "react";
-import { addExpense } from "../redux/Expense";
 
 export const ExpensesContext = createContext({
   expenses: [],
